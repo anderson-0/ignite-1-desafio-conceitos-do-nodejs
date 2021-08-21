@@ -25,7 +25,7 @@ function checksExistsUserAccount(request, response, next) {
 app.post('/users', (request, response) => {
   const { name, username } = request.body;
 
-  const userExists = users.find(user=>user.name === name);
+  const userExists = users.find(user=>user.username === username);
 
   if (userExists) return response.status(400).json({error: 'Username is already registered.'})
   const newUser = { 
@@ -81,14 +81,15 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   const { user } = request;
   const { id } = request.params;
 
-  const todo = user.todos.find(todo => todo.id === id);
+  const checkTodo = user.todos.find(todo => todo.id === id);
 
-  if (!todo) return response.status(404).json({error: 'Todo not found'});
+  if (!checkTodo) {
+    return response.status(404).json({ error: 'Todo not found' });
+  }
 
-  todo.done = true;
+  checkTodo.done = true;
 
-  return response.json(todo);
-
+  return response.json(checkTodo);
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
